@@ -1,0 +1,15 @@
+{
+  "name": "node_crud_produtos",
+  "version": "1.0.0",
+  "description": "Projeto de um CRUD utilizando node",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "author": "Bruno Otto",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19"
+  }
+}

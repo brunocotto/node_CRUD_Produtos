@@ -1,0 +1,29 @@
+POST http://localhost:4002/produtos
+content-type: application/json
+
+{
+    "name": "caderno 96 folhas",
+    "price": 14.59
+}
+
+###
+
+GET http://localhost:4002/produtos
+
+###
+
+GET http://localhost:4002/produtos/df0c5b8b-39d5-4b87-96f7-49eda8893760
+
+###
+
+PUT http://localhost:4002/produtos/df0c5b8b-39d5-4b87-96f7-49eda8893760
+content-type: application/json
+
+{
+    "name": "caderno 96 folhas preto",
+    "price": 10.55
+}
+
+###
+
+DELETE http://localhost:4002/produtos/48953628-118b-49ae-b19b-22789cb0caa1
