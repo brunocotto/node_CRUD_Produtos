@@ -1,15 +1,23 @@
-const { response } = require("express")
-const express = require("express")
-//randomUUID auxilia na criação de ID's de forma automática
-const { randomUUID } = require("crypto")
+require("dotenv").config()
+const DB_USER = process.env.DB_USER;
+const DB_PASSWORD = encodeURIComponent(process.env.DB_PASSWORD);
 
-const app = express()
+// importa o modelo do MongoDB
+const Product = require("./models/Product");
+const mongoose = require("mongoose");
+const { response } = require("express");
+const express = require("express");
 
-//utilizado para a extensão REST Request funcionar corretamente "content-type: application/json"
-app.use(express.json())
+const app = express();
 
-//Lista criada para ser o banco de dados fake, armazena os dados 
-const produtos = []
+//utilizado para a extensão REST Client funcionar corretamente "content-type: application/json"
+//Forma de ler JSON / Middleware
+app.use(
+    express.urlencoded({
+        extended: true,
+    })
+)
+app.use(express.json());
 
 /**
  * POST => Inserir um dado
@@ -24,75 +32,130 @@ const produtos = []
  * Query => /produtos?id=456654545655&
  */
 
-app.post("/produtos", (request, response) => {
-    // Nome e preço
-    const { name, price } = request.body;
+// rota inicial / endpoint
+app.get("/", (require, response) => {
+    //mostrar a requisição
+    response.json({message: "Express conectado."});
+})
+
+// Create - Inserindo dados no MongoDB
+ app.post("/product", async(request, response) => {
+    // request.body => desestruturação
+    const { name, price, approved } = request.body;
+
+    if(!name) {
+        //422 - A requisição está bem formada mas inabilitada para ser seguida devido a erros semânticos.
+        response.status(422).json({error: "O nome é obrigatório."});
+        return
+    }
     
-    const produto = {
+    const product = {
         name,
         price,
-        id: randomUUID(),
+        approved,
     };
-    
-    produtos.push(produto);
 
-    return response.json(produto);
+    try {
+        // criando dados
+        await Product.create(product);
+        
+        //201 - A requisição foi bem sucedida e um novo recurso foi criado como resultado. 
+        //Esta é uma tipica resposta enviada após uma requisição POST.
+        response.status(201).json({message: "Produto inserido com sucesso."});
+    } catch (error) {
+        //500 - O servidor encontrou uma situação com a qual não sabe lidar.
+        response.status(500).json({error: error});
+    }
 })
 
-//inserindo um produto #GET
-app.get("/produtos", (request, response) => {
-    return response.json(produtos);
-});
+// Read - Lendo todos os dados do schema no MongoDB
+app.get("/product", async(request, response) => {
+    //Verificando o log com a requisição completa
+    //console.log(request)
 
-//buscando o produto utilizando o parâmetro ID #GET
-app.get("/produtos/:id", (request, response) => {
-    const { id } = request.params;
-    /**
-     * O método find() retorna o valor do primeiro elemento 
-     * do array que satisfizer a função de teste provida. 
-     * Caso contrário, undefined é retornado.
-     */
-    //ou seja, ele só irá retornar o valor quando o "produto.id === id"
-    const produto = produtos.find(produto => produto.id === id);
-    return response.json(produto)
+    try {
+        /**
+         * O método find() retorna o valor do primeiro elemento 
+         * do array que satisfizer a função de teste provida. 
+         * Caso contrário, undefined é retornado.
+         */
+        const product = await Product.find();
+        
+        response.status(200).json(product);
+    } catch (error) {
+        response.status(500).json({error: error});
+    }
 })
 
-//altera o nome e preço de um produto utilizando seu ID #PUT
-app.put("/produtos/:id", (request, response) => {
-    const { id } = request.params;
-    const { name, price } = request.body;
-    /**
-     *  o método findIndex() retorna o índice 
-     * no array do primeiro elemento que satisfizer a função de teste provida. 
-     * Caso contrário, retorna -1, indicando que nenhum elemento passou no teste.
-     */
-    //ou seja, o find retornava o objeto inteiro o findIndex retorna apenas o index.
-    const produtoIndex = produtos.findIndex(produto => produto.id === id);
-    produtos[produtoIndex] = {
-        //Rest operator, pega todas as informações, menos name e preço...
-        ...produtos[produtoIndex],
+// Search - Busca o produto utilizando o parâmetro ID => request.params.id
+app.get("/product/:id", async(request, response) => {
+    const id = request.params.id;
+
+    try {
+        //db.collection.findOne(query, projection)
+        //Retorna um documento que atende aos critérios de consulta especificados na collection or view.
+        const product = await Product.findOne({ _id: id });
+
+        if(!Product) {
+            response.status(422).json({message: "O produto não foi encontrado."});
+            return
+        }
+
+        response.status(200).json(product);
+    } catch (error) {
+        response.status(500).json({error: error});
+    }
+})
+
+// Update - atualização dos dados (PUT, PATCH)
+// PUT - Atualização completa, PATCH - Atualização parcial dos dados
+app.patch("/product/:id", async(request, response) => {
+    const id = request.params.id;
+
+    const { name, price, approved } = request.body;
+
+    const product = {
         name,
         price,
+        approved,
+    };
+
+    try {
+        const updateProduct = await Product.updateOne({_id: id}, product);
+        //matchedCount 
+        if(updateProduct.matchedCount === 0) {
+            response.status(422).json({message: "O produto não foi encontrado."});
+            return
+        }
+
+        response.status(200).json(product);       
+    } catch (error) {
+        response.status(500).json({error: error});
     }
 
-    return response.json({ message: "Produto alterado com sucesso."});
 })
 
-//remove um produto utilizando seu ID #DELETE
-app.delete("/produtos/:id", (request, response) => {
-    const { id } = request.params;
+// Delete - deletando dados
+app.delete("/product/:id", async(request, response) => {
+    const id = request.params.id;
 
-    const produtoIndex = produtos.findIndex(produto => produto.id === id);
+    try {
+        await Product.deleteOne({ _id: id });
 
-    /**
-     * O método splice() altera o conteúdo de uma lista, 
-     * podendo adicionar novos elementos enquanto remove elementos antigos,
-     * ou, apenas removê-los, utilizando o valor 1 no param deleteCount.
-     * array.splice(indice[, deleteCount[, elemento1[, ...[, elementoN]]])
-     */
-    produtos.splice(produtoIndex, 1);
+        response.status(422).json({message: "Produto removido com sucesso."});
 
-    return response.json({ message: "Produto removido com sucesso."});
+    } catch (error) {
+        response.status(500).json({error: error});
+    }
 })
 
-app.listen(4002, () => console.log("Servidor está rodando na porta 4002"))
+// conection MongoDB
+mongoose
+    .connect(
+        `mongodb+srv://${DB_USER}:${DB_PASSWORD}@apicluster.pyywseu.mongodb.net/bancodaapi?retryWrites=true&w=majority}`
+    )
+    .then( () => {
+        console.log("Conexão com o MongoDB bem sucedida.");
+        app.listen(4002);
+    })
+    .catch((err) => console.log(err));

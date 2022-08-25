@@ -1,29 +1,42 @@
-POST http://localhost:4002/produtos
+POST http://localhost:4002/product
 content-type: application/json
 
 {
-    "name": "caderno 96 folhas",
-    "price": 14.59
+    "name": "Cadeira Gamer",
+    "price": 799.99,
+    "approved": true
 }
 
 ###
 
-GET http://localhost:4002/produtos
+GET http://localhost:4002/product
 
 ###
 
-GET http://localhost:4002/produtos/df0c5b8b-39d5-4b87-96f7-49eda8893760
+GET http://localhost:4002/product/63079525e9a7cd26872e3bf9
 
 ###
 
-PUT http://localhost:4002/produtos/df0c5b8b-39d5-4b87-96f7-49eda8893760
+PATCH http://localhost:4002/product/63079525e9a7cd26872e3bf9
+content-type: application/json
+
+{
+    "name": "Testando atualização",
+    "price": 2.99,
+    "approved": true
+}
+
+###
+
+PUT http://localhost:4002/product/df0c5b8b-39d5-4b87-96f7-49eda8893760
 content-type: application/json
 
 {
     "name": "caderno 96 folhas preto",
-    "price": 10.55
+    "price": 10.55,
+    "approved": true
 }
 
 ###
 
-DELETE http://localhost:4002/produtos/48953628-118b-49ae-b19b-22789cb0caa1
+DELETE http://localhost:4002/product/63079525e9a7cd26872e3bf9
