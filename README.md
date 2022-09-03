@@ -11,7 +11,7 @@
 
 ### Linguagens utilizadas no projeto:
 
-* JavaSript
+* JavaScript
 
 ### Frameworks e libs utilizadas:
 
