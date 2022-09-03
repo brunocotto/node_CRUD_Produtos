@@ -9,3 +9,19 @@
 
 #### Relizando a API do CRUD com persistência em uma conexão com o MongoDB, utilizando a ferramenta de modelagem de objetos MongoDB Mongoose, já que ela suporta promisses e callbacks, pois foi projetada para funcionar em um ambiente assíncrono.
 
+### Linguagens utilizadas no projeto:
+
+* JavaSript
+
+### Frameworks e libs utilizadas:
+
+* NodeJS
+* ExpressJS
+* Mongoose
+* Rest Client
+
+### Banco de dados:
+
+* MongoDB
+
+
