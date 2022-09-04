@@ -2,8 +2,8 @@ POST http://localhost:4002/product
 content-type: application/json
 
 {
-    "name": "Caneca Dev",
-    "price": 49.90,
+    "name": "tapete Super Mário",
+    "price": 29.90,
     "approved": true
 }
 
@@ -17,12 +17,12 @@ GET http://localhost:4002/product/6314aa9c276fc0539184f96c
 
 ###
 
-PATCH http://localhost:4002/product/63079525e9a7cd26872e3bf9
+PATCH http://localhost:4002/product/6314e0201a8b6c3e22f62d90
 content-type: application/json
 
 {
-    "name": "Testando atualização",
-    "price": 2.99,
+    "name": "Teclado",
+    "price": 119.9,
     "approved": true
 }
 
@@ -39,4 +39,4 @@ content-type: application/json
 
 ###
 
-DELETE http://localhost:4002/product/63079525e9a7cd26872e3bf9
+DELETE http://localhost:4002/product/6314aa52276fc0539184f96a
