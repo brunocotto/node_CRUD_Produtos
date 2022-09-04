@@ -2,8 +2,8 @@ POST http://localhost:4002/product
 content-type: application/json
 
 {
-    "name": "Cadeira Gamer",
-    "price": 799.99,
+    "name": "Caneca Dev",
+    "price": 49.90,
     "approved": true
 }
 
@@ -13,7 +13,7 @@ GET http://localhost:4002/product
 
 ###
 
-GET http://localhost:4002/product/63079525e9a7cd26872e3bf9
+GET http://localhost:4002/product/6314aa9c276fc0539184f96c
 
 ###
 
