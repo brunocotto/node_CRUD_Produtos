@@ -21,4 +21,5 @@ router.patch("/:id", productController.updateID)
 // Delete - deletando dados
 router.delete("/:id", productController.deleteID)
 
+// Exportando as rotas
 module.exports = router
