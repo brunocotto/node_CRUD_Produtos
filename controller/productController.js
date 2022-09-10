@@ -68,10 +68,11 @@ exports.searchID = async(request, response) => {
     try {
         //db.collection.findOne(query, projection)
         //Retorna um documento que atende aos critérios de consulta especificados na collection or view.
-        const product = await Product.findOne({ _id: id });
+        //const product = await Product.findOne({ _id: id });
+        const product = await Product.findById(id);
 
         if(!Product) {
-            response.status(422).json({message: "O produto não foi encontrado."});
+            response.status(422).json({message: "Produto não encontrado."});
             return
         }
 
@@ -82,10 +83,11 @@ exports.searchID = async(request, response) => {
 }
 
 exports.updateID = async(request, response) => {
+    // pega o ID do params
     const id = request.params.id;
-
+    // pega o name e price com desestruturação
     const { name, price, approved } = request.body;
-
+    // crio um objeto usando o name e price
     const product = {
         name,
         price,
@@ -93,10 +95,13 @@ exports.updateID = async(request, response) => {
     };
 
     try {
+        //const criada para condição do produto não ser encontrado
+	    //poderia ser Product.updateById( id, product);
+        // se o id == id atualiza product
         const updateProduct = await Product.updateOne({_id: id}, product);
-        //matchedCount 
+        //matchedCount - contém o número de documentos correspondentes 
         if(updateProduct.matchedCount === 0) {
-            response.status(422).json({message: "O produto não foi encontrado."});
+            response.status(422).json({message: "Produto não encontrado."});
             return
         }
 

@@ -4,7 +4,6 @@ const express = require('express');
 // importa o controller
 const productController = require('../controller/productController')
 
-
 // Read - Lendo todos os dados do schema no MongoDB
 router.get("/", productController.listAll)
 

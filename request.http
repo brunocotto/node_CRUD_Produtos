@@ -1,9 +1,14 @@
+POST http://localhost:4002/auth/register
+content-type: application/json
+
+###
+
 POST http://localhost:4002/product
 content-type: application/json
 
 {
-    "name": "tapete Super Mário",
-    "price": 29.90,
+    "name": "chimarrão domingo",
+    "price": 0.0,
     "approved": true
 }
 
@@ -13,7 +18,7 @@ GET http://localhost:4002/product
 
 ###
 
-GET http://localhost:4002/product/6314aa9c276fc0539184f96c
+GET http://localhost:4002/product/6307a9caec2d89fef86618e6
 
 ###
 

@@ -1,10 +1,12 @@
-require("dotenv").config()
+require('dotenv').config()
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = encodeURIComponent(process.env.DB_PASSWORD);
 
-const mongoose = require("mongoose");
-const { response } = require("express");
-const express = require("express");
+const mongoose = require('mongoose');
+const { response } = require('express');
+const express = require('express');
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const app = express();
 
@@ -17,9 +19,12 @@ app.use(
 )
 app.use(express.json());
 
+// rota de autenticação
+const authRoutes = require("./routes/authRoutes")
+app.use("/auth", authRoutes)
+
 // rotas da API
 const productRoutes = require("./routes/productRoutes")
-
 app.use("/product", productRoutes)
 
 // conection MongoDB
