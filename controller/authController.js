@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-exports.privateUserID = async(request, response) => {
+exports.searchUserID = async(request, response) => {
     const id = request.params.id
 
     //check if user exists
@@ -17,12 +17,14 @@ exports.privateUserID = async(request, response) => {
 
     response.status(200).json({ user });
 }
-
-function checkToken(request, response, next) {
+//Middleware - Verificação do token - next(se der tudo certo prossiga)
+checkTokenUser = function checkToken(request, response, next) {
+    //authorization é o token tipo: bearer #$@*$JDFHD
     const authHeader = request.headers['authorization'];
+    //splitando e extraindo apenas o token
     const token = authHeader && authHeader.split(" ")[1];
-   
-    if(!token) {
+   //se não vier o token
+    if (!token) {
         response.status(403).json({ msg: 'Acesso negado.' });
         return
     }
@@ -35,7 +37,7 @@ function checkToken(request, response, next) {
         next()
         
     } catch (error) {
-        response.status(403).json({ msg: 'Token inválido.' });
+        response.status(400).json({ msg: 'Token inválido.' });
         return
     }
 }

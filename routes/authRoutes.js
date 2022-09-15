@@ -4,8 +4,8 @@ const express = require('express');
 // importa o controller
 const authController = require('../controller/authController')
 
-// Private Route
-router.get("/users/:id", checkToken, authController.privateUserID)
+// Private Route - Middleware de Verificação do token "checkTokenUser"
+router.get("/users/:id", checkTokenUser, authController.searchUserID)
 
 // Register User
 router.post("/register", authController.registerUser)
