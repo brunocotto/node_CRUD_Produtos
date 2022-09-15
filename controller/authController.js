@@ -43,6 +43,7 @@ checkTokenUser = function checkToken(request, response, next) {
 }
 
 exports.registerUser = async (request, response) => {
+    //destructuring
     const { name, email, password, confirmpassword } = request.body;
 
     // validations
@@ -62,7 +63,7 @@ exports.registerUser = async (request, response) => {
     }
 
     if (password !== confirmpassword) {
-        response.status(422).json({ msg: 'As senhas não conferem' });
+        response.status(422).json({ msg: 'Senha Inválida' });
         return
     }
 
@@ -70,7 +71,7 @@ exports.registerUser = async (request, response) => {
     const userExists = await User.findOne({ email: email })
 
     if (userExists) {
-        response.status(422).json({ msg: 'Por favor, utilize outro email.' });
+        response.status(422).json({ msg: 'Email Existente.' });
         return
     }
 
@@ -84,7 +85,7 @@ exports.registerUser = async (request, response) => {
         email,
         password: passwordHash,
     })
-
+    // se tudo der certo salva o usuário no banco e retorna status 201
     try {
         await user.save()
 
